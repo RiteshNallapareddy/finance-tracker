@@ -33,3 +33,23 @@ def post_transactions():
     connection.close()
 
     return jsonify({'message': 'Transaction added!'}), 201
+
+@finance_bp.route('/transactions/summary', methods=['GET'])
+def get_summary():
+    connection = get_db_connection()
+    total_income = connection.execute( "SELECT SUM(amount) FROM transactions WHERE type = ?", ('income',)).fetchone()[0]
+    if total_income == None:
+        total_income = 0
+
+    total_expenses = connection.execute( "SELECT SUM(amount) FROM transactions WHERE type = ?", ('expense',)).fetchone()[0]   
+    if total_expenses == None:
+        total_expenses = 0
+
+    balance = total_income - total_expenses
+    connection.close()
+    
+    return jsonify({
+        'total_income' : total_income, 
+        'total_expenses' : total_expenses, 
+        'balance' : balance
+        })
