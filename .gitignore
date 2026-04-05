@@ -1,0 +1,20 @@
+# Virtual Environment
+venv/
+
+# Environment Variables (API keys - very important)
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# VS Code settings
+.vscode/
+
+# Database file
+*.db
+
+# System files
+.DS_Store
+Thumbs.db
