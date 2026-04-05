@@ -1,7 +1,10 @@
 from flask import Flask
 from database import init_db
+from routes.finance import finance_bp
 
 app = Flask(__name__)
+
+app.register_blueprint(finance_bp)
 
 init_db()
 
