@@ -3,12 +3,14 @@ from flask_cors import CORS
 from database import init_db
 from routes.finance import finance_bp
 from routes.stocks import stocks_bp
+from routes.news import news_bp
 
 app = Flask(__name__)
 CORS(app)
 
 app.register_blueprint(finance_bp)
 app.register_blueprint(stocks_bp)
+app.register_blueprint(news_bp)
 
 init_db()
 

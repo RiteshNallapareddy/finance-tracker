@@ -80,6 +80,3 @@ def delete_stock(id):
     connection.close()
 
     return jsonify({'message': 'Stock deleted!'}), 200
-
-   
-
