@@ -53,3 +53,12 @@ def get_summary():
         'total_expenses' : total_expenses, 
         'balance' : balance
         })
+
+@finance_bp.route('/transactions/<int:id>', methods=['DELETE'])
+def delete_transaction(id):
+    connection = get_db_connection()
+    connection.execute("DELETE FROM transactions WHERE id = ?", (id,))
+    connection.commit()
+    connection.close()
+
+    return jsonify({'message': 'Transaction deleted!'}), 200
