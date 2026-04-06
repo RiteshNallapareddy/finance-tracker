@@ -40,10 +40,17 @@ def post_portfolio():
 @stocks_bp.route('/portfolio/price', methods=['GET'])
 def get_price():
     symbol = request.args.get('symbol')
+    if not symbol:
+        return jsonify({'error' : 'Symbol is required'}) , 400
+    
     url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={API_KEY}'
     response = requests.get(url)
     data = response.json()
-    price = data['Global Quote']['05. price']
+
+    if 'Global Quote' not in data  or '05. price' not in data['Global Quote']:
+        return jsonify({'error' : 'Invalid symbol or API limit reached'}), 404
     
+    price = data['Global Quote']['05. price']
+
     return jsonify({'symbol': symbol, 'price': price})
 
