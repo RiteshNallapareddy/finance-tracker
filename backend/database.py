@@ -23,5 +23,12 @@ def init_db():
                         type TEXT, 
                         date TEXT,
                         description TEXT ) """)
+    connection.execute(""" CREATE TABLE IF NOT EXISTS portfolio (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       stock_name TEXT,
+                       symbol TEXT,
+                       shares REAL,
+                       purchase_price REAL,
+                       purchase_date TEXT ) """)
     connection.commit()
     connection.close()
