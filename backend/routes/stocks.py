@@ -17,7 +17,25 @@ def get_portfolio():
     portfolio = connection.execute("SELECT * FROM portfolio").fetchall()
     connection.close()
 
-    return jsonify([dict(row) for row in portfolio])
+    result = []
+    for stock in portfolio:
+        stock_dict = dict(stock)
+        url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={stock_dict['symbol']}&apikey={API_KEY}'
+        response = requests.get(url)
+        data = response.json()
+
+        # If price fetch fails, still return stock but with None values
+        if 'Global Quote' not in data or '05. price' not in data['Global Quote']:
+            stock_dict['current_price'] = None
+            stock_dict['profit_loss'] = None
+        else:
+            current_price = float(data['Global Quote']['05. price'])
+            profit_loss = round((current_price - stock_dict['purchase_price']) * stock_dict['shares'], 2)
+            stock_dict['current_price'] = current_price
+            stock_dict['profit_loss'] = profit_loss
+
+        result.append(stock_dict)
+    return jsonify(result)
 
 @stocks_bp.route('/portfolio', methods=['POST'])
 def post_portfolio():
@@ -53,4 +71,15 @@ def get_price():
     price = data['Global Quote']['05. price']
 
     return jsonify({'symbol': symbol, 'price': price})
+
+@stocks_bp.route('/portfolio/<int:id>', methods=['DELETE'])
+def delete_stock(id):
+    connection = get_db_connection()
+    connection.execute("DELETE FROM portfolio WHERE id = ?", (id,))
+    connection.commit()
+    connection.close()
+
+    return jsonify({'message': 'Stock deleted!'}), 200
+
+   
 
