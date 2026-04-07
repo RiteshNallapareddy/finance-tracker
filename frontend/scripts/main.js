@@ -1,4 +1,4 @@
-const API = 'http://127.0.0.1:5000'
+const API = 'https://finance-tracker-api-4m7d.onrender.com'
 
 // ─── SUMMARY ───────────────────────────────────────
 function loadSummary() {
