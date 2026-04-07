@@ -82,4 +82,4 @@ python backend/app.py
 | GET | `/news/stock` | Get stock specific news |
 
 ## 👨‍💻 Author
-Your Name — Computer Engineering Student
+Ritesh Nallapareddy
