@@ -2,9 +2,6 @@
 
 A full-stack financial dashboard with stock portfolio tracking and financial news integration.
 
-## 🌍 Live Demo
-[Finance Tracker](https://finance-tracker-lac-omega.vercel.app/)
-
 ## ✨ Features
 - **Personal Finance** — Track income and expenses with categories
 - **Stock Portfolio** — Real-time stock prices and profit/loss calculation
