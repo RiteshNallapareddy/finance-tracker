@@ -17,7 +17,7 @@ A full-stack financial dashboard with stock portfolio tracking and financial new
 | Frontend | HTML, CSS, JavaScript |
 | Backend | Python, Flask |
 | Database | SQLite |
-| Stock Data | yfinance |
+| Stock Data | yfinance (no API key required) |
 | News Data | NewsAPI |
 | Deployment | Vercel (frontend), Render (backend) |
 
@@ -46,7 +46,6 @@ pip install -r requirements.txt
 
 4. Create `.env` file (see `.env.example`):
 \```
-ALPHA_VANTAGE_KEY=your_key
 NEWS_API_KEY=your_key
 \```
 
