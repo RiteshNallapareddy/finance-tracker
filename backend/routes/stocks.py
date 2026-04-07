@@ -1,11 +1,15 @@
 from flask import Blueprint, jsonify, request
 from database import get_db_connection
-from dotenv import load_dotenv
-import requests
-import os
+import yfinance as yf
 
-load_dotenv()
-API_KEY=os.getenv('ALPHA_VANTAGE_KEY')
+# Get current price
+def get_stock_price(symbol):
+    try:
+        ticker = yf.Ticker(symbol)
+        price = ticker.info['currentPrice']
+        return round(float(price), 2)
+    except:
+        return None
 
 # Create the Blueprint object
 stocks_bp = Blueprint('stocks', __name__)
@@ -16,20 +20,15 @@ def get_portfolio():
     connection = get_db_connection()
     portfolio = connection.execute("SELECT * FROM portfolio").fetchall()
     connection.close()
-
     result = []
+
     for stock in portfolio:
         stock_dict = dict(stock)
-        url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={stock_dict['symbol']}&apikey={API_KEY}'
-        response = requests.get(url)
-        data = response.json()
-
-        # If price fetch fails, still return stock but with None values
-        if 'Global Quote' not in data or '05. price' not in data['Global Quote']:
+        current_price = get_stock_price(stock_dict['symbol'])
+        if current_price is None:
             stock_dict['current_price'] = None
             stock_dict['profit_loss'] = None
         else:
-            current_price = float(data['Global Quote']['05. price'])
             profit_loss = round((current_price - stock_dict['purchase_price']) * stock_dict['shares'], 2)
             stock_dict['current_price'] = current_price
             stock_dict['profit_loss'] = profit_loss
@@ -61,15 +60,9 @@ def get_price():
     if not symbol:
         return jsonify({'error' : 'Symbol is required'}) , 400
     
-    url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={API_KEY}'
-    response = requests.get(url)
-    data = response.json()
-
-    if 'Global Quote' not in data  or '05. price' not in data['Global Quote']:
+    price = get_stock_price(symbol)
+    if price is None:
         return jsonify({'error' : 'Invalid symbol or API limit reached'}), 404
-    
-    price = data['Global Quote']['05. price']
-
     return jsonify({'symbol': symbol, 'price': price})
 
 @stocks_bp.route('/portfolio/<int:id>', methods=['DELETE'])
